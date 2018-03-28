@@ -10,7 +10,7 @@ const defaultReducer = (state = 0, action) => {
 
 const rootReducer =  combineReducers({
     defaultReducer,
-    ...songList,
+    songList,
 });
 
 const store = createStore(rootReducer);
