@@ -1,33 +1,75 @@
 import React, { Component } from 'react';
-import { Container, Content, List, ListItem, Text } from 'native-base';
+import { Container, Icon, Input, Item, Content, List, ListItem, Text, Body, CheckBox } from 'native-base';
 import { connect } from 'react-redux';
 import songList from "../../reducers/songListReducer";
+import search from "fuzzysearch"
 
 class TabOne extends Component {
+    constructor(props) {
+       super(props);
+       this.state = {
+          searchText: '',
+          searchedSongList: []
+       };
+       // Toggle the state every second
+     }
+
+    componentWillMount = () => {
+
+    }
+    componentWillReceiveProps = () => {
+
+    }
+
+
+    onInputChange = (text) => {
+        const searchedSongList = this.props.songList.songList.filter(song => {
+            return search(text, song.title);
+        })
+        console.log(searchedSongList)
+        this.setState({
+            searchText: text,
+            searchedSongList
+        })
+        
+        console.log(typeof e);
+    }
+
     renderSongList() {
+        if (this.state.searchedSongList.length || this.state.searchText) {
+            return this.state.searchedSongList.map(song => (
+                    <ListItem key={song.title}>
+                        <CheckBox checked={true} />
+                        <Body>
+                          <Text>{song.title}</Text>
+                        </Body>
+                    </ListItem>
+                )
+            )
+        }
         return this.props.songList.songList.map(song => {
-            console.log('song!', song);
             return (
                 <ListItem key={song.title}>
-                    <Text>{song.title}</Text>
+                    <CheckBox checked={true} />
+                    <Body>
+                      <Text>{song.title}</Text>
+                    </Body>
                 </ListItem>
             )
         })
     }
     render() {
-        console.log('prop is ', this.props);
-        console.log(this.props);
         return (
             <Container>
                 <Content>
                     <List>
+                    <ListItem>
+                    <Item>
+                        <Icon name="ios-search" />
+                        <Input onChangeText={this.onInputChange} placeholder="Search" />
+                      </Item>
+                      </ListItem>
                         {this.renderSongList()}
-                        <ListItem>
-                            <Text>Nathaniel Clyne</Text>
-                        </ListItem>
-                        <ListItem>
-                            <Text>Dejan Lovren</Text>
-                        </ListItem>
                     </List>
                 </Content>
             </Container>
